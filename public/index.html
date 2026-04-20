@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fusion AI — Done-For-You AI Systems</title>
+  <meta name="description" content="We build AI systems that run your business while you sleep. Done-for-you automation, agents, and workflows for agency owners." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF6B2B;
+      --orange-dim: #FF6B2B22;
+      --orange-mid: #FF6B2B55;
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --bg3: #141414;
+      --border: #1f1f1f;
+      --border2: #2a2a2a;
+      --text: #f0f0f0;
+      --text-dim: #888;
+      --text-dimmer: #444;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Space Grotesk', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--orange); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 20px;
+      background: var(--orange);
+      color: #000;
+      border-radius: 6px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      text-align: center;
+    }
+
+    /* ASCII grid background */
+    .ascii-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ascii-grid {
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-dimmer);
+      white-space: pre;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      opacity: 0.35;
+      user-select: none;
+    }
+
+    /* Gradient mask over ASCII */
+    .ascii-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, var(--bg) 75%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      border: 1px solid var(--orange-mid);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero-title {
+      font-size: clamp(42px, 7vw, 88px);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
+      color: var(--text);
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--orange);
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-dim);
+      max-width: 600px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: var(--orange);
+      color: #000;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px var(--orange-mid);
+    }
+
+    .btn-primary svg { transition: transform 0.2s; }
+    .btn-primary:hover svg { transform: translateX(4px); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 28px;
+      color: var(--text-dim);
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1px solid var(--border2);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: var(--text-dim);
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--bg2);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 48px;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .marquee-item::before {
+      content: '◆';
+      color: var(--orange);
+      font-size: 8px;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── SECTION BASE ── */
+    section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--text-dim);
+      max-width: 540px;
+      line-height: 1.7;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2px;
+      margin-top: 64px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .process-card {
+      background: var(--bg2);
+      padding: 40px 32px;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .process-card:hover { background: var(--bg3); }
+
+    .process-card + .process-card {
+      border-left: 1px solid var(--border);
+    }
+
+    .process-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--orange);
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+
+    .process-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .process-card p {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* ── SYSTEMS ── */
+    .systems-section {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      max-width: 100%;
+      padding: 100px 40px;
+    }
+
+    .systems-inner { max-width: 1200px; margin: 0 auto; }
+
+    .systems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 64px;
+    }
+
+    .system-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
+      background: var(--bg);
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .system-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .system-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-4px);
+    }
+
+    .system-card:hover::before { opacity: 1; }
+
+    .system-icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 20px;
+      background: var(--bg2);
+    }
+
+    .system-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .system-card p {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* ── RESULTS ── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2px;
+      margin-top: 64px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .result-card {
+      background: var(--bg2);
+      padding: 48px 36px;
+      text-align: center;
+      position: relative;
+    }
+
+    .result-card + .result-card { border-left: 1px solid var(--border); }
+
+    .result-num {
+      font-family: var(--mono);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .result-label {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      text-align: center;
+      padding: 120px 40px;
+      position: relative;
+    }
+
+    .cta-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, var(--orange-dim) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section .section-title { font-size: clamp(32px, 5vw, 64px); }
+
+    .cta-section .section-sub {
+      margin: 0 auto 48px;
+      max-width: 500px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+
+    .footer-logo span { color: var(--orange); }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      section { padding: 72px 24px; }
+      .process-card + .process-card { border-left: none; border-top: 1px solid var(--border); }
+      .result-card + .result-card { border-left: none; border-top: 1px solid var(--border); }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">FUSION<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#systems">Systems</a></li>
+      <li><a href="#results">Results</a></li>
+    </ul>
+    <a href="#book" class="nav-cta">Book a Call</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="ascii-bg">
+      <div class="ascii-grid" id="asciiGrid"></div>
+    </div>
+
+    <div class="hero-content fade-up visible">
+      <div class="hero-tag">Done-For-You AI Systems</div>
+
+      <h1 class="hero-title">
+        Your business,<br />
+        run by <em>AI agents.</em>
+      </h1>
+
+      <p class="hero-sub">
+        We build custom AI systems that handle your sales reviews, client delivery, content operations, and reporting — so you can focus on growing.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#book" class="btn-primary">
+          Book a Free Call
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#systems" class="btn-secondary">See our systems ↓</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">Sales Call Review Agents</span>
+      <span class="marquee-item">Client Delivery Automation</span>
+      <span class="marquee-item">AI Content Operations</span>
+      <span class="marquee-item">Lead Scoring Pipelines</span>
+      <span class="marquee-item">Automated Reporting</span>
+      <span class="marquee-item">CRM Integrations</span>
+      <span class="marquee-item">Custom AI Workflows</span>
+      <span class="marquee-item">Sales Call Review Agents</span>
+      <span class="marquee-item">Client Delivery Automation</span>
+      <span class="marquee-item">AI Content Operations</span>
+      <span class="marquee-item">Lead Scoring Pipelines</span>
+      <span class="marquee-item">Automated Reporting</span>
+      <span class="marquee-item">CRM Integrations</span>
+      <span class="marquee-item">Custom AI Workflows</span>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="fade-up">
+      <div class="section-label">// How it works</div>
+      <h2 class="section-title">From discovery to<br />deployed in weeks.</h2>
+      <p class="section-sub">No bloated retainers. No six-month timelines. We audit, build, and hand you a system that runs.</p>
+    </div>
+    <div class="process-grid fade-up">
+      <div class="process-card">
+        <div class="process-num">01 — AUDIT</div>
+        <h3>We map your business</h3>
+        <p>One call to understand your bottlenecks, your team's workflow, and where AI can eliminate the most friction.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">02 — BUILD</div>
+        <h3>We build the system</h3>
+        <p>Custom AI agents, automations, and dashboards built specifically for your business. Not templates. Not off-the-shelf tools.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">03 — DEPLOY</div>
+        <h3>We hand it over running</h3>
+        <p>You get a fully operational system, trained on your data, connected to your tools. We stay on for refinement.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">04 — SCALE</div>
+        <h3>You grow, it scales</h3>
+        <p>As your business evolves, the systems evolve with it. Add agents, expand pipelines, automate more.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYSTEMS -->
+  <div class="systems-section">
+    <div class="systems-inner">
+      <div class="fade-up">
+        <div class="section-label">// What we build</div>
+        <h2 class="section-title">AI systems for every<br />part of your business.</h2>
+        <p class="section-sub">Each system is built custom — wired into your existing stack, trained on your data, and runs without you.</p>
+      </div>
+      <div class="systems-grid fade-up">
+        <div class="system-card">
+          <div class="system-icon">⚡</div>
+          <h3>Sales Call Review Agent</h3>
+          <p>AI reviews every sales call automatically — scores reps against your rubric, flags failures, sends Slack alerts, and coaches in real time.</p>
+        </div>
+        <div class="system-card">
+          <div class="system-icon">🎯</div>
+          <h3>Client Delivery OS</h3>
+          <p>A full operating centre for your agency — content pipelines, strategy agents, automated client reporting, and approval workflows.</p>
+        </div>
+        <div class="system-card">
+          <div class="system-icon">📊</div>
+          <h3>Lead Intelligence Pipeline</h3>
+          <p>AI qualifies inbound leads, scores intent, enriches data, and routes high-value prospects directly to your calendar.</p>
+        </div>
+        <div class="system-card">
+          <div class="system-icon">✍️</div>
+          <h3>Content Operations Engine</h3>
+          <p>Multi-platform content generation, approval, and scheduling — driven by your brand voice and client strategy, not prompts.</p>
+        </div>
+        <div class="system-card">
+          <div class="system-icon">🔄</div>
+          <h3>CRM & Workflow Automation</h3>
+          <p>End-to-end automation across your CRM, email, and project management tools — triggered by real events, not manual input.</p>
+        </div>
+        <div class="system-card">
+          <div class="system-icon">🧠</div>
+          <h3>Custom AI Agent Builds</h3>
+          <p>Have a specific problem? We scope and build bespoke AI agents for any workflow — from onboarding to fulfilment to reporting.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <section id="results">
+    <div class="fade-up">
+      <div class="section-label">// The numbers</div>
+      <h2 class="section-title">Built for agencies<br />that move fast.</h2>
+      <p class="section-sub">The results our clients see when AI starts running the parts of their business that drain them.</p>
+    </div>
+    <div class="results-grid fade-up">
+      <div class="result-card">
+        <div class="result-num">10+</div>
+        <div class="result-label">Hours saved per week<br />per client</div>
+      </div>
+      <div class="result-card">
+        <div class="result-num">2wk</div>
+        <div class="result-label">Average time from<br />call to deployed</div>
+      </div>
+      <div class="result-card">
+        <div class="result-num">100%</div>
+        <div class="result-label">Custom built for<br />your business</div>
+      </div>
+      <div class="result-card">
+        <div class="result-num">24/7</div>
+        <div class="result-label">Systems run without<br />you touching them</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section" id="book">
+    <div class="cta-glow"></div>
+    <div class="fade-up" style="position: relative; z-index: 1;">
+      <div class="section-label">// Ready to automate?</div>
+      <h2 class="section-title">Let's build your<br /><em style="font-style:normal;color:var(--orange)">AI system.</em></h2>
+      <p class="section-sub">One call. We'll map out exactly what to build, what it'll do, and what it'll cost. No fluff.</p>
+      <a href="https://cal.com" class="btn-primary" style="font-size:17px;padding:18px 40px;">
+        Book Your Free Strategy Call
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#" class="footer-logo">FUSION<span>AI</span></a>
+    <span class="footer-copy">© 2026 Fusion AI. All rights reserved.</span>
+  </footer>
+
+  <script>
+    // ── ASCII GRID GENERATOR ──
+    const chars = '01アイウエオカキクケコサシスセソタチツテト░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌';
+    const grid = document.getElementById('asciiGrid');
+
+    function generateAscii() {
+      const cols = Math.floor(window.innerWidth / 9);
+      const rows = 40;
+      let out = '';
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (Math.random() < 0.06) {
+            out += chars[Math.floor(Math.random() * chars.length)];
+          } else {
+            out += Math.random() < 0.15 ? (Math.random() < 0.5 ? '0' : '1') : ' ';
+          }
+        }
+        out += '\n';
+      }
+      grid.textContent = out;
+    }
+
+    generateAscii();
+    setInterval(generateAscii, 3000);
+    window.addEventListener('resize', generateAscii);
+
+    // ── SCROLL ANIMATIONS ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
